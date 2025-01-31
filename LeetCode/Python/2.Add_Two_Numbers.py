@@ -5,29 +5,27 @@
          self.val = val
          self.next = next
 
-
 class Solution:    
-    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode], overflow = 0) -> Optional[ListNode]:
-        node_list = [l1,l2]
-        if None in node_list and [isinstance(x,ListNode) for x in node_list].count(True) == 1:
-            node_index = node_list.index(None)
-            node_list[node_index] = ListNode(0,None)
-        val_sum: int = node_list[0].val + node_list[1].val
-        l1, l2 = node_list[0], node_list[1]
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode()
+        tail = dummy
 
-        if val_sum >= 10:
-            for list_node in [l1,l2]:
-                if list_node.next == None:
-                    list_node.next = ListNode(0,None)
-            val_sum = val_sum - 10
+        carry: bool = False
 
-            if l1.next != None:
-                l1.next.val += 1
-            else:
-                l1.next = ListNode(1,None)
-                l2.next = ListNode(0,None)
+        while l1 != None or l2 != None or carry != False:
+            l1_digit = l1.val if l1 is not None else 0
+            l2_digit = l2.val if l2 is not None else 0
+            
+            l_sum = l1_digit + l2_digit + carry
+            carry = l_sum // 10
+            digit = l_sum % 10
 
-        if node_list[0].next or node_list[1].next:
-            return ListNode(val_sum, self.addTwoNumbers(node_list[0].next,node_list[1].next))
-        else:
-            return ListNode(val_sum, None)
+            new_node = ListNode(digit)
+            tail.next = new_node
+            tail = tail.next
+
+            l1 = l1.next if l1 != None else None
+            l2 = l2.next if l2 != None else None
+
+        return dummy.next
+
